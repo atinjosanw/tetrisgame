@@ -1,0 +1,24 @@
+{
+  "name": "tetrisgame",
+  "description": "Frontend for A tetris game, supporting both single player and multi-players",
+  "main": "./public/app.js",
+  "authors": [
+    "Yating Wang <atinjosan@yahoo.com>"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "angular": "^1.5.0",
+    "angular-ui-router": "^0.2.18"
+  }
+}
