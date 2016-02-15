@@ -20,7 +20,8 @@
                         controller : 'HomeController'
                     },
                     'footer': {
-                        templateUrl: 'views/footer.html'
+                        templateUrl: 'views/footer.html',
+                        controller: 'FootController'
                     }
                 }
             })
