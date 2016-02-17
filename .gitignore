@@ -3,3 +3,4 @@ frontend/bower_components/
 frontend/images/
 .env
 dump.rdb
+frontend/logfile
