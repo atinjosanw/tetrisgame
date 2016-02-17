@@ -4,3 +4,4 @@ frontend/images/
 .env
 dump.rdb
 frontend/logfile
+test/
