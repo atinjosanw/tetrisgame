@@ -13,7 +13,8 @@ const findUser = function (query) {
     })
     .catch(error => {
         throw new Error(error);
-    });
+    })
+    .finally(pgp.end);
 };
 
 const insertUser = function (query) {
@@ -25,7 +26,8 @@ const insertUser = function (query) {
     })
     .catch(error => {
         throw new Error(error);
-    });
+    })
+    .finally(pgp.end);
 }
 
 
