@@ -15,6 +15,7 @@ let gameFactory = require('./lib/game-factory');
 let redisSessionClient = require('./share/redis-client').redisSessionClient;
 let restRoute = require('./lib/route');
 let socketRoute = require('./lib/socketRoute');
+let logHandle = require('./middleware/logHandle');
 
 let constant = require('./share/constants');
 
@@ -31,7 +32,8 @@ let sessOpt = {
     resave: false,
     saveUninitialized: true,
     secret: constant.SESS_SECRET,
-    cookie: {maxAge: 24 * 60 * 60 * 1000},
+    name: "sessionID",
+    cookie: {maxAge: 24 * 60 * 60 * 1000, },
     store: new redisStore(redisOpt)
 };
 
