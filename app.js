@@ -7,16 +7,17 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let redisStore = require('connect-redis')(session);
 
-let auth = require('./middleware/auth');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
-let gameFactory = require('./lib/game-factory');
-let redisSessionClient = require('./share/redis-client').redisSessionClient;
-let restRoute = require('./lib/route');
-let socketRoute = require('./lib/socketRoute');
+let restRoute = require('./routes/route');
+let socketRoute = require('./routes/socketRoute');
+
+let auth = require('./middleware/auth');
 let logHandle = require('./middleware/logHandle');
 
+let gameFactory = require('./share/game-factory');
+let redisSessionClient = require('./share/redis-client').redisSessionClient;
 let constant = require('./share/constants');
 
 
@@ -33,7 +34,7 @@ let sessOpt = {
     saveUninitialized: true,
     secret: constant.SESS_SECRET,
     name: "sessionID",
-    cookie: {maxAge: 24 * 60 * 60 * 1000, },
+    cookie: {maxAge: 24 * 60 * 60 * 1000},
     store: new redisStore(redisOpt)
 };
 

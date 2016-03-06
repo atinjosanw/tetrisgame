@@ -23,10 +23,12 @@ const socketAuth = function (socket, next) {
         return next();
     }
     let parseCookie = cookieParser(constant.SESS_SECRET);
-    socket.cookie = parseCookie(cookie);
-    socket.sessionID = socket.cookie.sessionID;
-    redisSessionClient.get("sess:" + socket.sessionID, function (err, sess) {
+    let cookie = parseCookie(cookie);
+    let sessionID = socket.cookie.sessionID;
+    redisSessionClient.get("sess:" + sessionID, function (err, sess) {
         if (!err && sess){
+            socket.cookie = cookie;
+            socket.sessionID = sessionID;
             socket.user = sess.user;
         }
         next();
