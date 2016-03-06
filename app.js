@@ -1,31 +1,36 @@
 'use strict';
 let express = require('express');
 let app = express();
-let route = require('./lib/route');
+let logger = require('morgan');
 let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
-let redis = require('redis');
-let redisClient = redis.createClient();
 let session = require('express-session');
 let redisStore = require('connect-redis')(session);
 
+let auth = require('./middleware/auth');
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
-let roomFactory = require('./lib/room-factory');
+let gameFactory = require('./lib/game-factory');
+let redisSessionClient = require('./share/redis-client').redisSessionClient;
+let restRoute = require('./lib/route');
+let socketRoute = require('./lib/socketRoute');
+
+let constant = require('./share/constants');
+
 
 let redisOpt = {
     db: 0,
     host: 'localhost',
     port: '6379',
-    client: redisClient,
+    client: redisSessionClient,
     ttl: 500
 };
 
 let sessOpt = {
     resave: false,
     saveUninitialized: true,
-    secret: '123456789ABC',
+    secret: constant.SESS_SECRET,
     cookie: {maxAge: 24 * 60 * 60 * 1000},
     store: new redisStore(redisOpt)
 };
@@ -35,35 +40,25 @@ if (app.get('env') === 'production') {
     sessOpt.cookies.secure = true;
 }
 
+app.use(cookieParser(constant.COOKIE_SECRET));
 app.use(session(sessOpt));
+app.use(logger('tiny'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(auth.restAuth);
 /*
  * REST routes
  */
-app.post('/register', registerHandler);
-app.post('/login', loginHandler);
-app.get('/logout', restAuth, logoutHandler);
+app.route('/', restRoute);
+// app.post('/register', registerHandler);
+// app.post('/login', loginHandler);
+// app.get('/logout', logoutHandler);
 
 /*
  * WebSocket connection
  */
-io.of('/lobby').use(socketAuth);
-io.of('/lobby').on('connect', logHandle, function (socket) {
-    let handshake = socket.hs,
-        socketId = socket.id,
-        socket.room = null;
-    socket.on('newRoom', createARoom);
-    socket.on('joinRoom', joinRoom);
-    socket.on('invite', invitePlayer);
-    socket.on('invited', processInvitation);
-    socket.on('start', startTheGame);
-    socket.on('gameover', endGame);
-    socket.on('move', move);
-    socket.on('quit', quit);
-    socket.on('disconnected', disconnect);
-    socket.on('pause', onpause);
-});
+io.of('/lobby').use(auth.socketAuth);
+io.of('/lobby').on('connect', logHandle, socketRoute);
 
 server.listen(process.env.SOCKETPORT)
 module.exports = app;
