@@ -1,6 +1,6 @@
 'use strict';
-const conString = require('./constants').PG_CONNECTION;
-let pgp = require('pg-promise')();
+const cn = require('./constants').PG_CONNECTION;
+let pgp = require('pg-promise')(cn);
 const db = pgp(conString);
 
 
