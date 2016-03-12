@@ -1,11 +1,12 @@
-let redisSessionClient = require('./share/redis-client.js').redisSessionClient;
-let cookieParser = require('cookie-parser');
-let queryDB = require('./share/queryDB');
-let constant = require('./share/constants');
+const cookieParser = require('cookie-parser');
+const redisSessionClient = require('../share/redis-client.js').redisSessionClient;
+const queryDB = require('../share/queryDB');
+const db = require('../share/pq-db');
+const constant = require('../share/constants');
 
-const restAuth = function (req, res, next) {
+function restAuth (req, res, next) {
     if (req.session && req.session.user) {
-        queryDB.findUser({email: req.session.user.email})
+        queryDB.findUser({email: req.session.user.email}, db)
         .then(user => {
             if (user != null) {
                 req.user = user;
@@ -17,7 +18,7 @@ const restAuth = function (req, res, next) {
     next();
 }
 
-const socketAuth = function (socket, next) {
+function socketAuth (socket, next) {
     let cookie = socket.request.headers.cookie;
     if (!cookie) {
         return next();
