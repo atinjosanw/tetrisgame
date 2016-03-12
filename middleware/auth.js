@@ -9,12 +9,20 @@ function restAuth (req, res, next) {
         queryDB.findUser({email: req.session.user.email}, db)
         .then(user => {
             if (user != null) {
-                req.user = user;
-                req.session.user = user;
+                req.session.email = user.user_email;
+                req.session.password = user.user_password;
             }
-            return next();
         });
     };
+    next();
+}
+
+function isAuthenticated(req, res, next) {
+    if (!req.session || !req.session.email) {
+        console.error("the user is not authenticated yet.");
+        res.statusCode = 401;
+        res.send({error: "not authenticated"});
+    }
     next();
 }
 

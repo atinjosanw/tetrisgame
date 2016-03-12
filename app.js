@@ -1,24 +1,24 @@
 'use strict';
-let express = require('express');
-let app = express();
-let logger = require('morgan');
-let bodyParser = require('body-parser');
-let cookieParser = require('cookie-parser');
-let session = require('express-session');
-let redisStore = require('connect-redis')(session);
+const express = require('express');
+const app = express();
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
 
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-let restRoute = require('./routes/route');
-let socketRoute = require('./routes/socketRoute');
+const restRoute = require('./routes/route');
+const socketRoute = require('./routes/socketRoute');
 
-let auth = require('./middleware/auth');
-let logHandle = require('./middleware/logHandle');
+const auth = require('./middleware/auth');
+const logHandle = require('./middleware/logHandle');
 
-let gameFactory = require('./share/game-factory');
-let redisSessionClient = require('./share/redis-client').redisSessionClient;
-let constant = require('./share/constants');
+const gameFactory = require('./share/game-factory');
+const redisSessionClient = require('./share/redis-client').redisSessionClient;
+const constant = require('./share/constants');
 
 
 let redisOpt = {
