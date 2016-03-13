@@ -52,10 +52,7 @@ app.use(auth.restAuth);
 /*
  * REST routes
  */
-app.route('/', restRoute);
-// app.post('/register', registerHandler);
-// app.post('/login', loginHandler);
-// app.get('/logout', logoutHandler);
+app.use(restRoute);
 
 /*
  * WebSocket connection

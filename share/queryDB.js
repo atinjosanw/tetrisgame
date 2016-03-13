@@ -27,7 +27,6 @@ const deleteUser = function (query, db) {
     .resolve(db.result("DELETE FROM users where user_email=${email} " +
                         "AND user_password=${password}", query))
     .then(function (result) {
-        console.log(`${result.rowCount}`);
         return result.rowCount;
     })
     .catch(function (error) {
