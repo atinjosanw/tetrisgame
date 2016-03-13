@@ -1,4 +1,5 @@
-let redis = require('redis');
-let redisSessionClient = redis.createClient();
+'use strict';
+const redis = require('redis');
+const redisSessionClient = redis.createClient();
 
-module.exports.redisClient = redisClient;
+module.exports.redisClient = redisSessionClient;

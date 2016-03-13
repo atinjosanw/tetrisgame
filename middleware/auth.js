@@ -1,7 +1,7 @@
-const cookieParser = require('cookie-parser');
+'use strict';
 const redisSessionClient = require('../share/redis-client.js').redisSessionClient;
 const queryDB = require('../share/queryDB');
-const db = require('../share/pq-db');
+const db = require('../share/pg-db');
 const constant = require('../share/constants');
 
 function restAuth (req, res, next) {
@@ -44,5 +44,5 @@ function socketAuth (socket, next) {
     });
 };
 
-module.exports.restAuth = restAuthen;
+module.exports.restAuth = restAuth;
 module.exports.socketAuth = socketAuth;
