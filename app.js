@@ -3,37 +3,28 @@ const express = require('express');
 const app = express();
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const redisStore = require('connect-redis')(session);
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 const restRoute = require('./routes/route');
 const socketRoute = require('./routes/socketRoute');
 
 const auth = require('./middleware/auth');
-const logHandle = require('./middleware/logHandle');
+const cookieParser = require('./middleware/cookiePsr');
+// const logHandle = require('./middleware/logHandle');
 
-const gameFactory = require('./share/game-factory');
-const redisSessionClient = require('./share/redis-client').redisSessionClient;
-const constant = require('./share/constants');
+// const gameFactory = require('./share/game-factory');
+const redisOpt = require('./share/redis-client').redisOpt;
+const config = require('./config');
 
-
-let redisOpt = {
-    db: 0,
-    host: 'localhost',
-    port: '6379',
-    client: redisSessionClient,
-    ttl: 500
-};
-
-let sessOpt = {
-    resave: false,
+const sessOpt = {
+    resave: true,
     saveUninitialized: true,
-    secret: constant.SESS_SECRET,
-    name: "sessionID",
+    secret: config.SESS_SECRET,
+    name: config.SESS_COOKIE_KEY,
     cookie: {maxAge: 24 * 60 * 60 * 1000},
     store: new redisStore(redisOpt)
 };
@@ -43,25 +34,24 @@ if (app.get('env') === 'production') {
     sessOpt.cookies.secure = true;
 }
 
-app.use(cookieParser(constant.COOKIE_SECRET));
+app.use(cookieParser);
 app.use(session(sessOpt));
 app.use(logger('tiny'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(auth.restAuth);
-/*
- * REST routes
- */
+
+//REST routes
 app.use(restRoute);
 
-/*
- * WebSocket connection
- */
+// WebSocket connection
 io.of('/lobby').use(auth.socketAuth);
-io.of('/lobby').on('connect', logHandle, socketRoute);
+io.of('/lobby').on('connect', socketRoute);
 
-server.listen(process.env.SOCKETPORT)
+server.listen(config.SOCKETPORT);
 module.exports = app;
+module.exports.io = io;
+module.exports.cookieParser = cookieParser;
 
 
 
