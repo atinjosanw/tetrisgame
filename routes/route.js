@@ -16,7 +16,6 @@ function registerHandler (req, res) {
     .then(user => {
         req.session.email = user.user_email;
         req.session.password = user.user_password;
-        console.log("created a new account");
         req.session.save();
         res.status(200).json(user);
     })

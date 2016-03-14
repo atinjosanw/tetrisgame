@@ -1,8 +1,9 @@
 'use strict';
-const redisSessionClient = require('../share/redis-client.js').redisSessionClient;
 const queryDB = require('../share/queryDB');
 const db = require('../share/pg-db');
-const constant = require('../share/constants');
+const config = require('../config');
+const cookieParser = require('../middleware/cookiePsr');
+const redisClient = require('../share/redis-client').redisClient;
 
 function restAuth (req, res, next) {
     if (req.session && req.session.user) {
@@ -27,21 +28,35 @@ function isAuthenticated(req, res, next) {
 }
 
 function socketAuth (socket, next) {
-    let cookie = socket.request.headers.cookie;
-    if (!cookie) {
-        return next();
-    }
-    let parseCookie = cookieParser(constant.SESS_SECRET);
-    let cookie = parseCookie(cookie);
-    let sessionID = socket.cookie.sessionID;
-    redisSessionClient.get("sess:" + sessionID, function (err, sess) {
-        if (!err && sess){
-            socket.cookie = cookie;
-            socket.sessionID = sessionID;
-            socket.user = sess.user;
-        }
+    let data = socket.request;
+    let cookie = data.headers.cookie;
+    if (socket.sessionID && socket.email) {
         next();
-    });
+    }
+    else if (cookie) {
+        cookieParser(data, {}, function (err) {
+            let sessionID = data.signedCookies[config.SESS_COOKIE_KEY];
+            sessionID = "sess:"+sessionID;
+            redisClient.get(sessionID, function (err, sess) {
+                if (err) {
+                    return next(err);
+                }
+                else if (!err && sess) {
+                    sess = JSON.parse(sess);
+                    socket.sessionID = sessionID;
+                    socket.email = sess.email;
+                    delete data["secret"];
+                    socket.authenticated = true;
+                    return next();
+                }
+            });
+        });
+    }
+    else {
+        socket.error('unauthenticated');
+        socket.disconnect();
+        next(new Error('invalid session'));
+    }
 };
 
 module.exports.restAuth = restAuth;
