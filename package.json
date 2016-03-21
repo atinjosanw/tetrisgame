@@ -23,7 +23,8 @@
     "express-session": "^1.13.0",
     "pg": "^4.4.6",
     "pg-promise": "^3.3.0",
-    "redis": "^2.4.2"
+    "redis": "^2.4.2",
+    "socket.io": "^1.4.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",

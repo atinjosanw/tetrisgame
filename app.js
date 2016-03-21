@@ -45,12 +45,15 @@ app.use(auth.restAuth);
 app.use(restRoute);
 
 // WebSocket connection
-io.of('/lobby').use(auth.socketAuth);
-io.of('/lobby').on('connect', socketRoute);
+let nsp = io.of('/lobby');
+nsp.use(auth.socketAuth);
+nsp.on('connect', function (socket) {
+    return socketRoute.handler(socket, nsp);
+});
 
 server.listen(config.SOCKETPORT);
 module.exports = app;
-module.exports.io = io;
+// module.exports.io = io;
 module.exports.cookieParser = cookieParser;
 
 

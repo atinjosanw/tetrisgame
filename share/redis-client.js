@@ -10,5 +10,8 @@ const redisOpt = {
     ttl: 500
 };
 
+const redisRoom = redis.createClient();
+
 module.exports.redisClient = redisSessionClient;
 module.exports.redisOpt = redisOpt;
+module.exports.redisRoom = redisRoom;
