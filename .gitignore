@@ -1,8 +1,6 @@
 node_modules/
 frontend/bower_components/
 frontend/images/
-.env
 dump.rdb
 frontend/logfile
-test/
 to-do.todo
