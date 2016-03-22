@@ -37,12 +37,12 @@ describe('db', function () {
             });
         });
 
-        it('should report error if the user is not in database', function (done) {
+        it('should report error if the user is not in database', function () {
             let finduser = finduserX({email: users.nonexistingUser.email});
 
             return finduser.catch(error => {
-                expect(error).to.be.an('error');
-                done();
+                // console.log(error.message);
+                expect(error).to.not.empty;
             });
         });
     });
@@ -61,14 +61,14 @@ describe('db', function () {
             })
         });
 
-        it('should insert a new user', function (done) {
+        it('should insert a new user', function () {
             let user = users.newuser;
             let insertuser = insertuserX(user, db);
             let numRecord_before = 0;
 
             return insertuser.then(user => {
-                expect(user).to.have.all.keys('user_email', 'user_password');
-                done();
+                console.log(user);
+                expect(user).to.have.all.keys('user_id', 'user_email', 'user_password');
             });
         });
     });
