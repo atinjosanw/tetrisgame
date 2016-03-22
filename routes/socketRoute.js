@@ -4,11 +4,15 @@ const RoomFactory = require('../lib/room-factory');
 const handler = function (socket, io) {
     // TODO
     // subscribe to the channel for publishing realtime rooms and players
+    console.log(`io = ${Object.keys(io.clients().sockets)}`);
     socket.emit('welcome', {msg: 'successfully connected'});
     socket.on('newRoom', createRoom.bind(socket));
     socket.on('joinRoom', joinRoom.bind(socket));
     socket.on('leaveRoom', leaveRoom.bind(socket));
-    socket.on('invite', invite.bind(socket, io));
+    socket.on('invite', function (user) {
+        console.log(`user is ${user}`)
+        invite.apply(socket, [user, io]);
+    });
     socket.on('disconnect', disconnectAll.bind(socket));
     socket.on('start', startTheGame.bind(socket));
     socket.on('gameover', endTheGame);
@@ -17,13 +21,14 @@ const handler = function (socket, io) {
 }
 
 function createRoom() {
+    console.log('newRoom');
+
     if (!this.email || Object.keys(this.rooms).length > 1) {
         this.emit('newRoom', {error: 'cannot create a room.'});
     }
     else {
         let roomId = RoomFactory.createRoom(this.email);
         this.join(roomId).emit('newRoom', {room: roomId});
-        console.log(Object.keys(this.rooms));
     }
 }
 
@@ -44,32 +49,30 @@ function joinRoom(room) {
             this.join(res).emit("joinRoom", {room: res});
         })
         .catch(err => {
-            console.log(err.message);
             this.emit("joinRoom", {error: err.message});
         });
     }
 }
 
 function disconnectAll() {
-    console.log("on disconnectAll");
-    console.log(`this.rooms are ${Object.keys(this.rooms)}`);
     if (this.rooms.length > 1) {
         return leaveRoom.apply(this, this.rooms);
     }
 }
 
-function invite(socketId, io) {
-    io.to(socketId).emit('invited', {room: this.room});
+function invite(invitee, io) {
+    console.log(`invite io : ${Object.keys(io)},
+        invitee.id = ${invitee.id},
+        this.email = ${this.email}`);
+    io.to(invitee.id).emit('invited', {user: this.email, id: this.id});
 }
 
 function leaveRoom(room) {
     RoomFactory.leaveRoom(room.id, this.email)
     .then(res => {
-        console.log(res);
         this.emit('leaveRoom', {status: res});
     })
     .catch(reason => {
-        console.log(reason);
         this.emit('leaveRoom', {status: 0});
     });
 }
