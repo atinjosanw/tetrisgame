@@ -1,0 +1,28 @@
+backEnd
+-	Config
+-2	need to reset config file: now test env is almost the same as development env
+-5	refactor files using config.js: config.js file has separated test and development.
+-	RestRoute
++-3	user registration, login, logout: for now only use user.email and user.password as only information
+-2	user should be able to update their information,has its own profile page (for score, etc)
++-3	create a databaase to store user information: using postgres for this
++-3	test restRoute
+-3	format API response
+
+- 	socketRoute
+-3 	joinRoom_test should just have one hit.: (right now the test is successful when hitting one test individually, but not continuously. The problem lies on the middleware of serverIO_helper.js when creating a new serverIO)
+-2 	refactor test file: have written a socket factory and client-io factory. Those code in begin and after can be refactorized.
++-4 	inviteSocket_test.js cannot run through yet.: Need to add back the 'invite' event. Thinking about an invitor invites an invitee by post their email address and then the server will lookup this invitee in memory for their socket.id\
+-2 	some functions are writeen in socketRoute module, need to look back.
+
+frontEnd
+-	game module
+-5	define a tetris game: for a game, it has basic components (blocks), board, #move(), #clean(), #start/run(), #gameover(), #nextBlock(),
+-4 	frontEnd connection logic: angular connect to backend server
+-3 	frontEnd UI: written in AngularJS framework, which handles game logic when player(s) in a room. (messaging will be handled by backend server)
+
+middleware
++-4	 authentication (session based): socketRoute and restRoute should share the session information, using redis for storing the session info
+-2	 messaging/PubSub module :for logging online user activities.
+
+
