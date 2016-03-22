@@ -18,7 +18,7 @@ const cookieParser = require('./middleware/cookiePsr');
 
 // const gameFactory = require('./share/game-factory');
 const redisOpt = require('./share/redis-client').redisOpt;
-const config = require('./config');
+const config = require('./config')[process.env];
 
 const sessOpt = {
     resave: true,
@@ -45,7 +45,7 @@ app.use(auth.restAuth);
 app.use(restRoute);
 
 // WebSocket connection
-let nsp = io.of('/lobby');
+const nsp = io.of('/lobby');
 nsp.use(auth.socketAuth);
 nsp.on('connect', function (socket) {
     return socketRoute.handler(socket, nsp);
@@ -53,7 +53,6 @@ nsp.on('connect', function (socket) {
 
 server.listen(config.SOCKETPORT);
 module.exports = app;
-// module.exports.io = io;
 module.exports.cookieParser = cookieParser;
 
 

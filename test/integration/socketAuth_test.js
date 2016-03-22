@@ -4,7 +4,7 @@ const expect = chai.expect;
 const request = require('supertest');
 const app = require('../../server');
 const io_client = require('socket.io-client');
-const config = require('../../config');
+const config = require('../../config')["test"];
 const socketURL = 'http://localhost:' + config.SOCKETPORT + '/lobby';
 const socketOptions = {
     transports: ['websocket'],

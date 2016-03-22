@@ -7,7 +7,7 @@ const users = require('../fixture/user_fixture');
 const SocketStub = require('../helper/socketStub');
 
 const socketAuth = require('../../middleware/auth').socketAuth;
-const config = require('../../config');
+const config = require('../../config')["test"];
 const cookieParser = require('cookie-parser')(config.COOKIE_SECRET);
 const clearTestDB = require('../helper/clearDB');
 

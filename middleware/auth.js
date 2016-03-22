@@ -1,7 +1,7 @@
 'use strict';
 const queryDB = require('../share/queryDB');
 const db = require('../share/pg-db');
-const config = require('../config');
+const config = require('../config')[process.env];
 const cookieParser = require('../middleware/cookiePsr');
 const redisClient = require('../share/redis-client').redisClient;
 

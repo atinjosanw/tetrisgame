@@ -4,13 +4,11 @@ const RoomFactory = require('../lib/room-factory');
 const handler = function (socket, io) {
     // TODO
     // subscribe to the channel for publishing realtime rooms and players
-    console.log(`io = ${Object.keys(io.clients().sockets)}`);
     socket.emit('welcome', {msg: 'successfully connected'});
     socket.on('newRoom', createRoom.bind(socket));
     socket.on('joinRoom', joinRoom.bind(socket));
     socket.on('leaveRoom', leaveRoom.bind(socket));
     socket.on('invite', function (user) {
-        console.log(`user is ${user}`)
         invite.apply(socket, [user, io]);
     });
     socket.on('disconnect', disconnectAll.bind(socket));
@@ -21,8 +19,6 @@ const handler = function (socket, io) {
 }
 
 function createRoom() {
-    console.log('newRoom');
-
     if (!this.email || Object.keys(this.rooms).length > 1) {
         this.emit('newRoom', {error: 'cannot create a room.'});
     }
@@ -61,9 +57,6 @@ function disconnectAll() {
 }
 
 function invite(invitee, io) {
-    console.log(`invite io : ${Object.keys(io)},
-        invitee.id = ${invitee.id},
-        this.email = ${this.email}`);
     io.to(invitee.id).emit('invited', {user: this.email, id: this.id});
 }
 
