@@ -13,7 +13,7 @@ backEnd
 -3 	joinRoom_test should just have one hit.: (right now the test is successful when hitting one test individually, but not continuously. The problem lies on the middleware of serverIO_helper.js when creating a new serverIO)
 -2 	refactor test file: have written a socket factory and client-io factory. Those code in begin and after can be refactorized.
 +-4 	inviteSocket_test.js cannot run through yet.: Need to add back the 'invite' event. Thinking about an invitor invites an invitee by post their email address and then the server will lookup this invitee in memory for their socket.id\
--2 	some functions are writeen in socketRoute module, need to look back.
+-2 	some functions writeen in socketRoute module have not implemented, need to look back.
 
 frontEnd
 -	game module
