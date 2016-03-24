@@ -1,7 +1,7 @@
 backEnd
 -	Config
 -2	need to reset config file: now test env is almost the same as development env
--5	refactor files using config.js: config.js file has separated test and development.
++-5	refactor files using config.js: config.js file has separated test and development.
 -	RestRoute
 +-3	user registration, login, logout: for now only use user.email and user.password as only information
 -2	user should be able to update their information,has its own profile page (for score, etc)
